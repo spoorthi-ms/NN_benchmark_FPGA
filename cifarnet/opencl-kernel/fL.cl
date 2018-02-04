@@ -1,10 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
-__kernel void __attribute__ ((reqd_work_group_size(32,32,1))) fL(__global int *Layer1_Weights_CPU, __global int *Data_Layer_CPU_R, __global int *Data_Layer_CPU_G, __global int *Data_Layer_CPU_B, __global double *Layer1_Features)
+__kernel void __attribute__ ((reqd_work_group_size(32,32,1))) fL(__global double *Layer1_Weights_CPU, __global int *Data_Layer_CPU_R, __global int *Data_Layer_CPU_G, __global int *Data_Layer_CPU_B, __global double *Layer1_Features)
 		{
 	int x = get_global_id(0);
 	int y = get_global_id(1);
+
+	printf("\n %f", Layer1_Weights_CPU[x]);
+
+	printf("\n %d", Data_Layer_CPU_R[x]);
+
+	printf("\n %d", Data_Layer_CPU_G[x]);
+
+	printf("\n %d", Data_Layer_CPU_B[x]);
 
 	for(int f=0; f<32; f++)
 	{
@@ -32,5 +40,6 @@ __kernel void __attribute__ ((reqd_work_group_size(32,32,1))) fL(__global int *L
 			}
 		}
 		Layer1_Features[f*32*32+x*32+y] = result;
+		printf("\n F: %f", Layer1_Features[f*32*32+x*32+y]);
 	}
-		}
+}
