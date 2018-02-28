@@ -3086,7 +3086,7 @@ void ConvertInput(int *Data_Layer_CPU_R, int *Data_Layer_CPU_G, int *Data_Layer_
 
 
 #if 1
-double Layer1_Weights_copy[] = {
+float Layer1_Weights_copy[] = {
 		2.903335727751255035e-02,
 		1.966379582881927490e-02,
 		-9.698497160570695996e-05,
@@ -5495,47 +5495,6 @@ double Layer1_Weights_copy[] = {
 
 
 
-#if TEST
-
-#include <stdlib.h>
-#include <stdio.h>
-
-int arr[] = {1,2,3,4,5,6,7,8,9};
-
-int main()
-{
-	for(int i=0; i<2400; i++)
-		printf("\n %d",Layer1_Weights_copy[i]);
-
-}
-
-#endif
-
-#define TEST2 0
-#include <stdio.h>
-#if TEST2
-int main()
-{
-	FILE * fptr = fopen ("data.txt","rb");
-	char ch;
-	if(fptr != NULL)
-	{
-		printf("\nFile openeed");
-	}
-
-	ch = fgetc(fptr);
-	    while (ch != EOF)
-	    {
-	        printf ("%c", ch);
-	        ch = fgetc(fptr);
-	    }
-	 fclose(fptr);
-
-}
-
-
-#endif
-
 #define ACTUAL 1
 
 #if ACTUAL
@@ -5562,11 +5521,11 @@ volatile int *Layer1_Weights_hw = (volatile int*)0x43C00040;
 volatile int *Data_R_hw = (volatile int*)0x43C00048;
 volatile int *Data_G_hw = (volatile int*)0x43C00050;
 volatile int *Data_B_hw = (volatile int*)0x43C00058;
-volatile double *Layer1_Features_hw = (volatile double*)0x43C00060;
+volatile int *Layer1_Features_hw = (volatile int*)0x43C00060;
 
 
-#define WG_SIZE_X 32
-#define WG_SIZE_Y 32
+#define WG_SIZE_X 1024
+#define WG_SIZE_Y 1
 #define WG_SIZE_Z 1
 
 
@@ -5575,20 +5534,20 @@ int main()
 	init_platform();
 	/* more initialization */
 	Xil_SetTlbAttributes(0x43c00000,0x10c06); /* non cacheable */
-	double *Layer1_Weights_host;
+	float *Layer1_Weights_host;
 	int *Data_R_host;
 	int *Data_G_host;
 	int *Data_B_host;
-	double* Layer1_Features_host;
+	float* Layer1_Features_host;
 	int *Data_Layer_CPU;
 
-	/* Allocating host memory */
-	Layer1_Weights_host = (double*) malloc (3*32*32 * sizeof(double));
+	/* Allocating host memory1 */
+	Layer1_Weights_host = (float*) malloc (3*32*32 * sizeof(float));
 	Data_R_host = (int*) malloc (32*32*sizeof(int));
 	Data_G_host = (int*) malloc (32*32*sizeof(int));
 	Data_B_host = (int*) malloc (32*32*sizeof(int));
 	Data_Layer_CPU = (int*) malloc (3*32*32*sizeof(int));
-	Layer1_Features_host = (double*) malloc (32*32*32 * sizeof(double));
+	Layer1_Features_host = (float*) malloc (32*32*32 * sizeof(float));
 
 	for(int i=0; i<2400; i++)
 	{
@@ -5604,7 +5563,7 @@ int main()
 	ConvertInput(Data_R_host, Data_G_host, Data_B_host, Data_Layer_CPU);
 
 
-#if 1
+#if 0
 	for (int i = 0; i < 2400; i++)
 	{
 		printf("\n %f",Layer1_Weights_host[i]);
@@ -5651,8 +5610,8 @@ int main()
 	print("\nDONE!\n\r");
 
 
-#if 0
-	for (int i = 0; i < 2400; i++)
+#if 1
+	for (int i = 0; i < 32768; i++)
 		{
 			printf("\n %f",Layer1_Features_host[i]);
 		}
