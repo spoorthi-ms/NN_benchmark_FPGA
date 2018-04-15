@@ -1,4 +1,4 @@
-__kernel void __attribute__ ((reqd_work_group_size(13,1,1))) fire9sq1x1(__global float *fire9squeeze1x1_Weights_hw, __global float *fire9expand1x1_Weights_hw, __global float *fire9expand3x3_Weights_hw, __global float *fire9squeeze1x1_Features,  __global float *Pool_Layer8_Features, __global float *fire9expand1x1_Features_hw, __global float *fire9_Features)
+__kernel void __attribute__ ((reqd_work_group_size(13,1,1))) fire9sq1x1(__global float *fire9squeeze1x1_Weights_hw, __global float *fire9expand1x1_Weights_hw, __global float *fire9expand3x3_Weights_hw, __global float *fire9squeeze1x1_Features,  __global float *Pool_Layer8_Features,  __global float *fire9_Features)
 		{
 	int x = get_local_id(0);
 	int y = get_group_id(0);
@@ -36,10 +36,10 @@ __kernel void __attribute__ ((reqd_work_group_size(13,1,1))) fire9sq1x1(__global
 		//ReLU activation function computation
 		if(Features_expand1x1_9<0)
 			Features_expand1x1_9 = 0;
-		fire9expand1x1_Features_hw[f*13*13 + x*13+ y] = Features_expand1x1_9;
+		fire9_Features[f*13*13 + x*13+ y] = Features_expand1x1_9;
 	}
 
-	fire9squeeze1x1_Features = fire9squeeze1x1_Features+(13*13*256);
+	fire9_Features = fire9_Features+(13*13*256);
 	for(int f=0; f<256; f++)
 	{
 		Features_expand3x3_9 = 0;
